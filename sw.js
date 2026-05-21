@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ock-timesheet-v3';
+const CACHE_NAME = 'ock-timesheet-v4'; // Updated version hash
 const ASSETS = [
   './',
   './index.html',
