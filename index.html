@@ -74,6 +74,39 @@ body {
 
 .section-title { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; padding: 14px 14px 6px; }
 
+/* DAY SLIDER NAVIGATION CONTEXT */
+.day-navigator-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px 12px;
+}
+.day-nav-btn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--navy);
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+.day-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.day-nav-center {
+  text-align: center;
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--muted);
+}
+
 .entries-list { padding: 0 12px; }
 .entry-card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
 .entry-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px 8px; background: linear-gradient(90deg,#fafbff,#fff); border-bottom: 1px solid var(--border); }
@@ -88,7 +121,7 @@ body {
 .field-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.7px; text-transform: uppercase; margin-bottom: 3px; }
 .field-input { width: 100%; border: 1px solid var(--border); border-radius: 7px; padding: 8px 9px; font-size: 14px; color: var(--text); background: var(--bg); outline: none; transition: border 0.15s; -webkit-appearance: none; }
 .field-input:focus { border-color: var(--red); background: #fff; }
-textarea.field-input { resize: none; min-height: 60px; font-size: 13px; line-height: 1.4; font-family: inherit; }
+textarea.field-input { resize: none; min-height: 75px; font-size: 13px; line-height: 1.4; font-family: inherit; }
 .delete-btn { margin-top: 8px; background: none; border: 1px solid #fca5a5; color: #dc2626; border-radius: 7px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; float: right; }
 .delete-btn:active { background: #fee2e2; }
 
@@ -109,8 +142,10 @@ textarea.field-input { resize: none; min-height: 60px; font-size: 13px; line-hei
 .toggles-row { display: flex; gap: 16px; margin: 8px 0 4px; flex-wrap: wrap; }
 .toggles-row .toggle-row { margin: 0; }
 
-.add-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: calc(100% - 24px); margin: 4px 12px 12px; background: var(--navy); color: #fff; border: none; border-radius: 10px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(26,26,110,0.18); }
-.add-btn:active { opacity: 0.85; }
+.action-bar { display: flex; gap: 10px; margin: 4px 12px 12px; }
+.add-btn { flex: 2; display: flex; align-items: center; justify-content: center; gap: 6px; background: var(--navy); color: #fff; border: none; border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(26,26,110,0.18); }
+.save-next-btn { flex: 3; display: flex; align-items: center; justify-content: center; gap: 6px; background: var(--green); color: #fff; border: none; border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(22,163,74,0.18); }
+.action-bar button:active { opacity: 0.85; }
 
 .tab-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
@@ -150,7 +185,7 @@ textarea.field-input { resize: none; min-height: 60px; font-size: 13px; line-hei
 .stat-label { font-size: 9px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; }
 
 .table-wrap { margin: 10px 12px 0; overflow: hidden; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.05); overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 12px; min-width: 400px; }
+table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 12px; min-width: 500px; }
 thead tr { background: var(--navy); color: #fff; }
 thead th { padding: 9px 5px; text-align: center; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
 thead th.remarks-col { text-align: left; padding-left: 8px; }
@@ -216,7 +251,6 @@ tbody td.off-cell { color: var(--red); font-weight: 600; font-size: 10px; }
 
 <div id="offlineBadge">⚠️ OFFLINE — Data saved locally</div>
 
-<!-- PAGE 1 — DAILY ENTRY -->
 <div id="page-entry" class="page active">
   <div class="header">
     <div class="header-top">
@@ -247,9 +281,20 @@ tbody td.off-cell { color: var(--red); font-weight: 600; font-size: 10px; }
     </div>
   </div>
 
-  <div class="section-title">Daily Entries</div>
+  <div class="section-title">Daily Entry Input</div>
+  
+  <div class="day-navigator-bar">
+    <button class="day-nav-btn" id="prevDayBtn" onclick="navigateActiveIndex(-1)">‹</button>
+    <div class="day-nav-center" id="dayNavLabel">Entry 0 of 0</div>
+    <button class="day-nav-btn" id="nextDayBtn" onclick="navigateActiveIndex(1)">›</button>
+  </div>
+
   <div class="entries-list" id="entriesList"></div>
-  <button class="add-btn" onclick="addEntry()">＋ Add New Day Entry</button>
+  
+  <div class="action-bar">
+    <button class="add-btn" onclick="addEntry()">＋ New Day</button>
+    <button class="save-next-btn" id="saveNextBtn" onclick="saveAndNext()">💾 Save & Next Day</button>
+  </div>
 
   <div class="backup-section">
     <div class="backup-title">💾 Data Backup — protect against Chrome clear</div>
@@ -262,7 +307,6 @@ tbody td.off-cell { color: var(--red); font-weight: 600; font-size: 10px; }
   <div style="height:8px"></div>
 </div>
 
-<!-- PAGE 2 — SUMMARY REPORT -->
 <div id="page-report" class="page">
   <div class="header header-report">
     <div class="header-top">
@@ -276,7 +320,6 @@ tbody td.off-cell { color: var(--red); font-weight: 600; font-size: 10px; }
   <div id="reportContent"></div>
 </div>
 
-<!-- TAB BAR -->
 <div class="tab-bar">
   <button class="tab-btn active" id="tab-entry" onclick="switchTab('entry')">
     <span class="tab-icon">✏️</span>Entry
@@ -295,6 +338,7 @@ const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Satur
 const _now = new Date();
 let currentMonth = `${_now.getFullYear()}-${String(_now.getMonth()+1).padStart(2,'0')}`;
 let entries = [];
+let activeEntryIndex = 0; // Tracking single card view
 let db = null;
 
 // ── INDEXEDDB CORES ───────────────────────────────────
@@ -366,13 +410,20 @@ function getMonthEntriesFromDB(month) {
     const transaction = db.transaction(['entries'], 'readonly');
     const store = transaction.objectStore('entries');
     const request = store.get(month);
-    request.onsuccess = () => resolve(request.result ? request.result.data : []);
+    request.onsuccess = () => {
+      let data = request.result ? request.result.data : [];
+      // Sort chronologically automatically
+      data.sort((a,b) => (a.date || '').localeCompare(b.date || ''));
+      resolve(data);
+    };
     request.onerror = () => resolve([]);
   });
 }
 
 function saveMonthEntriesToDB(month, data) {
   return new Promise((resolve) => {
+    // Keep it ordered chronologically
+    data.sort((a,b) => (a.date || '').localeCompare(b.date || ''));
     const transaction = db.transaction(['entries'], 'readwrite');
     const store = transaction.objectStore('entries');
     store.put({ month: month, data: data });
@@ -458,6 +509,7 @@ async function switchMonth(dir) {
   const d = new Date(y, m-1+dir, 1);
   currentMonth = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
   entries = await getMonthEntriesFromDB(currentMonth);
+  activeEntryIndex = entries.length > 0 ? 0 : 0;
   await updateMonthUI();
   renderEntries();
   if(document.getElementById('page-report').classList.contains('active')) renderReport();
@@ -483,85 +535,150 @@ function switchTab(tab) {
   document.getElementById('page-'+tab).classList.add('active');
   document.getElementById('tab-'+tab).classList.add('active');
   window.scrollTo(0,0);
+  if(tab==='entry') renderEntries();
   if(tab==='report') renderReport();
+}
+
+function navigateActiveIndex(direction) {
+  const newIndex = activeEntryIndex + direction;
+  if(newIndex >= 0 && newIndex < entries.length) {
+    activeEntryIndex = newIndex;
+    renderEntries();
+  }
+}
+
+async function saveAndNext() {
+  if(entries.length === 0) return;
+  
+  // Implicitly save any open fields across database scope
+  await saveMonthEntriesToDB(currentMonth, entries);
+  
+  if(activeEntryIndex < entries.length - 1) {
+    activeEntryIndex++;
+    renderEntries();
+    showToast('💾 Progress Saved!');
+  } else {
+    showToast('✅ All current entries completed!');
+  }
 }
 
 // ── ENTRY RENDERING ──────────────────────────────────
 function renderEntries() {
   const list = document.getElementById('entriesList');
+  const prevBtn = document.getElementById('prevDayBtn');
+  const nextBtn = document.getElementById('nextDayBtn');
+  const navLabel = document.getElementById('dayNavLabel');
+  const saveNextBtn = document.getElementById('saveNextBtn');
+  
   if(!entries.length) {
-    list.innerHTML=`<div class="empty-state"><div class="icon">📋</div>No entries yet.<br>Tap <b>＋ Add New Day Entry</b> to begin.</div>`;
+    list.innerHTML=`<div class="empty-state"><div class="icon">📋</div>No entries for this month yet.<br>Tap <b>＋ New Day</b> to start tracking.</div>`;
+    if(prevBtn) prevBtn.disabled = true;
+    if(nextBtn) nextBtn.disabled = true;
+    if(navLabel) navLabel.textContent = "0 of 0 Days";
+    if(saveNextBtn) saveNextBtn.disabled = true;
     return;
   }
-  list.innerHTML = entries.map((e,i)=>{
-    const dn=getDayName(e.date), hrs=calcHours(e.timeIn,e.timeOut), wknd=isWeekend(e.date);
-    return `
-    <div class="entry-card">
-      <div class="entry-header">
-        <div class="entry-date-day">
-          <span class="entry-date">${e.date||'Pick date'}</span>
-          <span class="entry-day${wknd?' weekend':''}">${dn||'—'}</span>
-        </div>
-        <span class="entry-hours">${hrs} hrs</span>
+  
+  if(saveNextBtn) saveNextBtn.disabled = false;
+  
+  // Boundaries safeguard index validation
+  if(activeEntryIndex >= entries.length) activeEntryIndex = entries.length - 1;
+  if(activeEntryIndex < 0) activeEntryIndex = 0;
+  
+  // Set up Nav Buttons configurations
+  if(prevBtn) prevBtn.disabled = (activeEntryIndex === 0);
+  if(nextBtn) nextBtn.disabled = (activeEntryIndex === entries.length - 1);
+  if(navLabel) navLabel.textContent = `Day ${activeEntryIndex + 1} of ${entries.length}`;
+  
+  const i = activeEntryIndex;
+  const e = entries[i];
+  const dn = getDayName(e.date), hrs = calcHours(e.timeIn,e.timeOut), wknd = isWeekend(e.date);
+  
+  list.innerHTML = `
+  <div class="entry-card">
+    <div class="entry-header">
+      <div class="entry-date-day">
+        <span class="entry-date">${e.date||'Pick date'}</span>
+        <span class="entry-day${wknd?' weekend':''}">${dn||'—'}</span>
       </div>
-      <div class="entry-body">
-        <div class="field-label">Date</div>
-        <input class="field-input" type="date" value="${e.date||''}" onchange="updateEntry(${i},'date',this.value)" style="margin-bottom:8px"/>
-        <div class="time-row">
-          <div class="time-group">
-            <div class="field-label">Time In</div>
-            <input class="field-input" type="time" value="${e.timeIn||''}" onchange="updateEntry(${i},'timeIn',this.value)"/>
-          </div>
-          <div class="time-group">
-            <div class="field-label">Time Out</div>
-            <input class="field-input" type="time" value="${e.timeOut||''}" onchange="updateEntry(${i},'timeOut',this.value)"/>
-          </div>
+      <span class="entry-hours">${hrs} hrs</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-label">Date</div>
+      <input class="field-input" type="date" value="${e.date||''}" onchange="updateEntryField(${i},'date',this.value)" style="margin-bottom:8px"/>
+      <div class="time-row">
+        <div class="time-group">
+          <div class="field-label">Time In</div>
+          <input class="field-input" type="time" value="${e.timeIn||''}" onchange="updateEntryField(${i},'timeIn',this.value)"/>
         </div>
-        <div class="field-label">Task / Comment</div>
-        <textarea class="field-input" rows="3" onchange="updateEntry(${i},'remarks',this.value)">${e.remarks||''}</textarea>
-
-        <div class="toggles-row">
-          <div class="toggle-row">
-            <label class="toggle-wrap standby-toggle">
-              <input type="checkbox" ${e.standby?'checked':''} onchange="updateEntry(${i},'standby',this.checked)"/>
-              <span class="toggle-slider"></span>
-            </label>
-            <span class="toggle-label">⏳ Standby Duty</span>
-          </div>
-          <div class="toggle-row">
-            <label class="toggle-wrap ot-toggle">
-              <input type="checkbox" ${e.ot?'checked':''} onchange="updateEntry(${i},'ot',this.checked)"/>
-              <span class="toggle-slider"></span>
-            </label>
-            <span class="toggle-label">⚡ OT${wknd?' (PH/Wknd)':''}</span>
-          </div>
+        <div class="time-group">
+          <div class="field-label">Time Out</div>
+          <input class="field-input" type="time" value="${e.timeOut||''}" onchange="updateEntryField(${i},'timeOut',this.value)"/>
         </div>
-
-        <button class="delete-btn" onclick="deleteEntry(${i})">🗑 Delete</button>
-        <div style="clear:both"></div>
       </div>
-    </div>`;
-  }).join('');
+      <div class="field-label">Task Details / Comments / Site Code</div>
+      <textarea class="field-input" rows="4" placeholder="Enter site data details here..." onchange="updateEntryField(${i},'remarks',this.value)">${e.remarks||''}</textarea>
+
+      <div class="toggles-row">
+        <div class="toggle-row">
+          <label class="toggle-wrap standby-toggle">
+            <input type="checkbox" ${e.standby?'checked':''} onchange="updateEntryField(${i},'standby',this.checked)"/>
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label">⏳ Standby Duty</span>
+        </div>
+        <div class="toggle-row">
+          <label class="toggle-wrap ot-toggle">
+            <input type="checkbox" ${e.ot?'checked':''} onchange="updateEntryField(${i},'ot',this.checked)"/>
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label">⚡ OT${wknd?' (PH/Wknd)':''}</span>
+        </div>
+      </div>
+
+      <button class="delete-btn" onclick="deleteEntry(${i})">🗑 Delete Day</button>
+      <div style="clear:both"></div>
+    </div>
+  </div>`;
 }
 
 async function addEntry() {
-  const today = new Date().toISOString().slice(0,10);
-  entries.push({ date: today, timeIn:'09:00', timeOut:'18:00', remarks:'', standby:false, ot:false });
+  let targetDate = new Date().toISOString().slice(0,10);
+  
+  // Smart prediction logic: setup date based on existing records
+  if(entries.length > 0) {
+    const lastDateStr = entries[entries.length - 1].date;
+    if(lastDateStr) {
+      const nextD = new Date(lastDateStr + 'T00:00:00');
+      nextD.setDate(nextD.getDate() + 1);
+      targetDate = nextD.toISOString().slice(0,10);
+    }
+  }
+
+  entries.push({ date: targetDate, timeIn:'09:00', timeOut:'18:00', remarks:'', standby:false, ot:false });
   await saveMonthEntriesToDB(currentMonth, entries); 
+  
+  // Set view index directly to the new item context
+  activeEntryIndex = entries.length - 1;
   renderEntries();
-  setTimeout(()=>{ document.getElementById('entriesList').lastElementChild?.scrollIntoView({behavior:'smooth',block:'center'}); },100);
 }
 
-async function updateEntry(i, key, val) {
+async function updateEntryField(i, key, val) {
   entries[i][key] = val;
   await saveMonthEntriesToDB(currentMonth, entries);
-  if(['date','timeIn','timeOut'].includes(key)) renderEntries();
+  if(['date','timeIn','timeOut'].includes(key)) {
+    // Re-render calculation metrics instantly
+    renderEntries();
+  }
 }
 
 async function deleteEntry(i) {
-  if(!confirm('Delete this entry?')) return;
+  if(!confirm('Delete this single day entry?')) return;
   entries.splice(i,1); 
   await saveMonthEntriesToDB(currentMonth, entries);
+  if(activeEntryIndex > 0 && activeEntryIndex >= entries.length) {
+    activeEntryIndex = entries.length - 1;
+  }
   renderEntries();
   showToast('🗑 Entry deleted');
 }
@@ -653,7 +770,7 @@ function renderReport() {
     </div>`;
 }
 
-// ── PDF EXPORT ───────────────────────────────────────
+// ── PDF EXPORT (PRO-ALIGNMENT REDESIGN) ───────────────────────────────────────
 function exportPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation:'landscape', unit:'mm', format:'a4' });
@@ -684,7 +801,7 @@ function exportPDF() {
       hrs>0?String(hrs):'—',
       e.standby?'YES':'—',
       e.ot?'YES':'—',
-      (e.remarks||'').replace(/\n/g,' | ')
+      e.remarks||''
     ];
   });
 
@@ -701,14 +818,24 @@ function exportPDF() {
 
   doc.autoTable({
     startY: 50,
-    head: [['Date','Day','Time In','Time Out','Normal Hrs','Stand-by','OT','Remarks / Task']],
+    head: [['Date','Day','Time In','Time Out','Normal Hrs','Stand-by','OT','Remarks / Task / Site Details']],
     body: tableData,
-    styles: { fontSize:8, cellPadding:3, valign:'top' },
-    headStyles: { fillColor:[26,26,110], textColor:255, fontStyle:'bold', halign:'center' },
+    styles: { 
+      fontSize: 8.5, 
+      cellPadding: 4, 
+      valign: 'middle',
+      overflow: 'linebreak'
+    },
+    headStyles: { fillColor:[26,26,110], textColor:255, fontStyle:'bold', halign:'center', valign:'middle' },
     columnStyles: {
-      0:{cellWidth:25}, 1:{cellWidth:20}, 2:{cellWidth:18}, 3:{cellWidth:18},
-      4:{cellWidth:18,halign:'center'}, 5:{cellWidth:18,halign:'center'},
-      6:{cellWidth:14,halign:'center'}, 7:{cellWidth:'auto'}
+      0:{cellWidth:24, halign:'center'}, 
+      1:{cellWidth:22, halign:'center'}, 
+      2:{cellWidth:18, halign:'center'}, 
+      3:{cellWidth:18, halign:'center'},
+      4:{cellWidth:22, halign:'center'}, 
+      5:{cellWidth:20, halign:'center'},
+      6:{cellWidth:16, halign:'center'}, 
+      7:{cellWidth:'auto', halign:'left'} // Expand details elegantly on newlines
     },
     didParseCell(data) {
       if(data.section==='body') {
@@ -728,12 +855,20 @@ function exportPDF() {
   });
 
   const finalY = doc.lastAutoTable.finalY || 180;
+  
+  // Protect check signatures space overflow bounds
+  let signatureY = finalY + 15;
+  if (signatureY > 185) { 
+    doc.addPage();
+    signatureY = 25; 
+  }
+  
   doc.setFontSize(9); doc.setTextColor(80,80,80);
-  doc.text('Employee Signature: ___________________________',10,finalY+18);
-  doc.text('Authorised Signature: ___________________________',160,finalY+18);
+  doc.text('Employee Signature: ___________________________',10,signatureY);
+  doc.text('Authorised Signature: ___________________________',160,signatureY);
 
   doc.save(`OCK_Timesheet_${currentMonth}.pdf`);
-  showToast('✅ PDF exported!');
+  showToast('✅ PDF clean layout exported!');
 }
 
 // ── BACKUP AND RESTORE ───────────────────────────────
@@ -758,6 +893,7 @@ function importBackup(input) {
         }
       }
       entries = await getMonthEntriesFromDB(currentMonth);
+      activeEntryIndex = 0;
       renderEntries();
       showToast('✅ Backup imported!');
     } catch(err){ showToast('❌ Invalid backup file'); }
@@ -783,6 +919,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   try {
     await initDB();
     entries = await getMonthEntriesFromDB(currentMonth);
+    activeEntryIndex = entries.length > 0 ? 0 : 0;
     await updateMonthUI();
     renderEntries();
   } catch (err) {
